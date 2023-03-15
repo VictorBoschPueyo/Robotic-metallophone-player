@@ -7,7 +7,7 @@ import numpy as np
 from rectangle import Rectangle
 from note import Note
 from best_fit import fit
-from functions import locate_images, merge_recs
+from functions import locate_images, merge_recs, detect
 
 from random import randint
 
@@ -68,22 +68,92 @@ if __name__ == "__main__":
 
     # Analyse the pentagram
     print("Matching pentagram image...")
-    penta_recs = locate_images(
+    recs_penta = locate_images(
         img_gray, penta_imgs, penta_lower, penta_upper, penta_thresh)
 
     print("Filtering weak pentagram matches...")
-    penta_recs = [j for i in penta_recs for j in i]
-    heights = [r.y for r in penta_recs] + [0]
+    recs_penta = [j for i in recs_penta for j in i]
+    heights = [r.y for r in recs_penta] + [0]
     histo = [heights.count(i) for i in range(0, max(heights) + 1)]
     avg = np.mean(list(set(histo)))
-    penta_recs = [r for r in penta_recs if histo[r.y] > avg]
+    recs_penta = [r for r in recs_penta if histo[r.y] > avg]
 
     print("Merging pentagram image results...")
-    penta_recs = merge_recs(penta_recs, 0.01)
+    recs_penta = merge_recs(recs_penta, 0.01)
     penta_recs_img = img.copy()
-    for r in penta_recs:
+    for r in recs_penta:
         r.draw(penta_recs_img, (0, 0, 255), 2)
 
-    cv2.imshow('pentagrama', penta_recs_img)
-    cv2.waitKey(0)
-    # cv2.imwrite('penta_recs_img.png', penta_recs_img)
+    cv2.imwrite('penta_recs_img.png', penta_recs_img)
+
+    print("Discovering staff locations...")
+    penta_boxes = merge_recs([Rectangle(0, r.y, img_width, r.h)
+                             for r in recs_penta], 0.01)
+    penta_boxes_img = img.copy()
+    for r in penta_boxes:
+        r.draw(penta_boxes_img, (0, 0, 255), 2)
+    cv2.imwrite('penta_boxes_img.png', penta_boxes_img)
+
+    # Detection with every template
+    recs_sost = detect(img, img_gray, "sost", sost_imgs,
+                       sost_lower, sost_upper, sost_thresh)
+    recs_bem = detect(img, img_gray, "bem", bem_imgs,
+                      bem_lower, bem_upper, bem_thresh)
+    recs_negra = detect(img, img_gray, "negra", negra_imgs,
+                        negra_lower, negra_upper, negra_thresh)
+    recs_blanca = detect(img, img_gray, "blanca", blanca_imgs,
+                         blanca_lower, blanca_upper, blanca_thresh)
+    recs_rodona = detect(img, img_gray, "rodona", rodona_imgs,
+                         rodona_lower, rodona_upper, rodona_thresh)
+
+    # Create all notes and ordenate them
+    note_groups = []
+    for box in penta_boxes:
+        # For every pentagram, creates a note with all the information in it
+        penta_sost = [Note(r, "sharp", box)
+                      for r in recs_sost if abs(r.middle[1] - box.middle[1]) < box.h*5.0/8.0]
+        penta_bem = [Note(r, "flat", box)
+                     for r in recs_bem if abs(r.middle[1] - box.middle[1]) < box.h*5.0/8.0]
+        notes_negres = [Note(r, "4,8", box, penta_sost, penta_bem)
+                        for r in recs_negra if abs(r.middle[1] - box.middle[1]) < box.h*5.0/8.0]
+        notes_blanques = [Note(r, "2", box, penta_sost, penta_bem)
+                          for r in recs_blanca if abs(r.middle[1] - box.middle[1]) < box.h*5.0/8.0]
+        notes_rodones = [Note(r, "1", box, penta_sost, penta_bem)
+                         for r in recs_rodona if abs(r.middle[1] - box.middle[1]) < box.h*5.0/8.0]
+
+        # Join all types of notes in a single group
+        penta_notes = notes_negres + notes_blanques + notes_rodones
+
+        # Sort the notes in time order
+        penta_notes.sort(key=lambda n: n.rec.x)
+        pentagrames = [r for r in recs_penta if r.overlap(box) > 0]
+        pentagrames.sort(key=lambda r: r.x)
+        note_color = (randint(0, 255), randint(0, 255), randint(0, 255))
+
+        note_group = []
+        i = 0
+        j = 0
+        while (i < len(penta_notes)):
+            if (penta_notes[i].rec.x > pentagrames[j].x and j < len(pentagrames)):
+                r = pentagrames[j]
+                j += 1
+                if len(note_group) > 0:
+                    note_groups.append(note_group)
+                    note_group = []
+                note_color = (randint(0, 255), randint(
+                    0, 255), randint(0, 255))
+            else:
+                note_group.append(penta_notes[i])
+                penta_notes[i].rec.draw(img, note_color, 2)
+                i += 1
+        note_groups.append(note_group)
+
+    for r in penta_boxes:
+        r.draw(img, (0, 0, 255), 2)
+    for r in recs_sost:
+        r.draw(img, (0, 0, 255), 2)
+    flat_recs_img = img.copy()
+    for r in recs_bem:
+        r.draw(img, (0, 0, 255), 2)
+
+    cv2.imwrite('identification.png', img)

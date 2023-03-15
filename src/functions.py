@@ -1,3 +1,5 @@
+import cv2
+
 from rectangle import Rectangle
 from best_fit import fit
 
@@ -39,3 +41,20 @@ def merge_recs(recs, threshold):
                     i += 1
         filtered_recs.append(r)
     return filtered_recs
+
+
+def detect(img, img_gray, figure_name, figure_imgs, lower, upper, thresh):
+    print("Matching " + figure_name + " image...")
+    # Locate the figures in the image
+    recs = locate_images(img_gray, figure_imgs, lower, upper, thresh)
+
+    print("Merging " + figure_name + " image results...")
+    recs = merge_recs([j for i in recs for j in i], 0.5)
+
+    # Draw every rectangle in the image
+    recs_img = img.copy()
+    for r in recs:
+        r.draw(recs_img, (0, 0, 255), 2)
+    cv2.imwrite(figure_name + '_recs_img.png', recs_img)
+
+    return recs
