@@ -1,12 +1,9 @@
 import sys
-import subprocess
 import cv2
-import time
 import numpy as np
 
 from rectangle import Rectangle
 from note import Note
-from best_fit import fit
 from functions import locate_images, merge_recs, detect
 
 from random import randint
