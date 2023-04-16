@@ -1,9 +1,9 @@
-import sys
 import cv2
 import numpy as np
 
 from rectangle import Rectangle
 from note import Note
+from partiture import Partiture
 from functions import locate_images, merge_recs, detect
 
 from random import randint
@@ -51,9 +51,9 @@ rodona_lower, rodona_upper, rodona_thresh = 50, 150, 0.70
 #################################################################
 
 
-if __name__ == "__main__":
+def analyze_sheet(img_path):
     img_file = "sheets/himne_alegria.png"
-    img = cv2.imread(img_file, 0)
+    img = cv2.imread(img_path, 0)
 
     # aqui ja arribara la imatge filtrada d'abans
     img_gray = img  # cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     ret, img_gray = cv2.threshold(img_gray, 127, 255, cv2.THRESH_BINARY)
     ###
 
-    img_width, img_height = img_gray.shape[::-1]
+    img_width, _ = img_gray.shape[::-1]
 
     # Analyse the pentagram
     print("Matching pentagram image...")
@@ -111,11 +111,11 @@ if __name__ == "__main__":
                       for r in recs_sost if abs(r.middle[1] - box.middle[1]) < box.h*5.0/8.0]
         penta_bem = [Note(r, "flat", box)
                      for r in recs_bem if abs(r.middle[1] - box.middle[1]) < box.h*5.0/8.0]
-        notes_negres = [Note(r, "4,8", box, penta_sost, penta_bem)
+        notes_negres = [Note(r, "negra", box, penta_sost, penta_bem)
                         for r in recs_negra if abs(r.middle[1] - box.middle[1]) < box.h*5.0/8.0]
-        notes_blanques = [Note(r, "2", box, penta_sost, penta_bem)
+        notes_blanques = [Note(r, "blanca", box, penta_sost, penta_bem)
                           for r in recs_blanca if abs(r.middle[1] - box.middle[1]) < box.h*5.0/8.0]
-        notes_rodones = [Note(r, "1", box, penta_sost, penta_bem)
+        notes_rodones = [Note(r, "rodona", box, penta_sost, penta_bem)
                          for r in recs_rodona if abs(r.middle[1] - box.middle[1]) < box.h*5.0/8.0]
 
         # Join all types of notes in a single group
@@ -154,3 +154,4 @@ if __name__ == "__main__":
         r.draw(img, (0, 0, 255), 2)
 
     cv2.imwrite('identification.png', img)
+    return Partiture(note_groups)
