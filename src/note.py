@@ -22,9 +22,10 @@ notes_map = {
     12: "e3",
     13: "d3",
     14: "c3",
-    15: "b3",
-    16: "a3",
+    15: "b2",
+    16: "a2",
 }
+
 
 class Note:
     def __init__(self, rectangle_note, duration, rectangle_penta, sost_notes=[], bem_notes=[]):
@@ -33,7 +34,7 @@ class Note:
         # Calculates which note is it by comparing the note's rectangle relative position in the pentagram's rectangle
         middle = rectangle_note.y + (rectangle_note.h / 2.0)
         height = (middle - rectangle_penta.y) / rectangle_penta.h
-        
+
         self.note_value = int(height/note_step + 0.5)
         self.note = notes_map[self.note_value]
 
