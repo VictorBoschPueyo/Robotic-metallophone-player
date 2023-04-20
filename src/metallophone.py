@@ -66,6 +66,11 @@ class Keyboard:
             if note in key:
                 return i
 
+    def get_note_position(self, note):
+        for i, key in enumerate(self.keyboard):
+            if note in key.note:
+                return i
+
     def create_keyboard(self, lowest_note, highest_note):
         keyboard = []
         ind_init = self.get_note_index(lowest_note)
@@ -82,7 +87,7 @@ class Keyboard:
 
         # Get the middle note
         middle_note = notes[len(notes)//2]
-        return self.get_note_index(middle_note.note) - self.get_note_index(partiture.lowest_note)
+        return self.get_note_position(middle_note.note)
 
     def calculate_weights_left(self):
         for i in range(self.n_keys):
@@ -129,6 +134,34 @@ class Keyboard:
         # Calculate weights
         self.calculate_weights_left()
         self.calculate_weights_right()
+
+    def distribuite_movements(self):
+        movements = []
+
+        # Distribuite movements
+        for note in self.notes:
+            ind_note = self.get_note_position(note.note)
+
+            if self.keyboard[ind_note].weight_left < self.keyboard[ind_note].weight_right:
+                # Move motor left
+                self.keyboard[self.pos_motor_left].motor = None
+                self.keyboard[ind_note].motor = "left"
+                self.pos_motor_left = ind_note
+                movements.append(["L", note])
+            else:
+                # Move motor right
+                self.keyboard[self.pos_motor_right].motor = None
+                self.keyboard[ind_note].motor = "right"
+                self.pos_motor_right = ind_note
+                movements.append(["R", note])
+
+            # Calculate weights
+            self.calculate_weights_left()
+            self.calculate_weights_right()
+
+            self.print_keyboard()
+
+        return movements
 
     def print_keyboard(self):
         divider = "+-------"*self.n_keys + "+"
