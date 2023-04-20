@@ -1,4 +1,4 @@
-
+import numpy as np
 
 entire_keyboard = [
     ["g5"],
@@ -51,9 +51,13 @@ class Keyboard:
         self.keyboard = self.create_keyboard(
             partiture.lowest_note, partiture.highest_note)
 
-        self.n_notes = len(self.keyboard)
+        self.notes = partiture.partiture
+
+        self.n_keys = len(self.keyboard)
+        self.middle = self.calculate_middle(partiture)
+
         self.pos_motor_left = 0
-        self.pos_motor_right = self.n_notes - 1
+        self.pos_motor_right = self.n_keys - 1
 
         self.initial_calculation()
 
@@ -72,18 +76,24 @@ class Keyboard:
 
         return keyboard
 
+    def calculate_middle(self, partiture):
+        # Sort partiture notes by note value
+        notes = sorted(partiture.partiture, key=lambda x: x.note_value)
+
+        # Get the middle note
+        middle_note = notes[len(notes)//2]
+        return self.get_note_index(middle_note.note) - self.get_note_index(partiture.lowest_note)
+
     def calculate_weights_left(self):
-        for i in range(self.n_notes):
+        for i in range(self.n_keys):
             if i < self.pos_motor_right:
-                if i < self.pos_motor_left:
-                    self.keyboard[i].weight_left = 0.05
-                elif i == self.pos_motor_left:
+                if i <= self.pos_motor_left:
                     self.keyboard[i].weight_left = 0.0
                 else:
-                    if i < self.n_notes/2 - 0.5:
+                    if i < self.middle:
                         self.keyboard[i].weight_left = abs(
                             self.pos_motor_left - i) * 0.05
-                    elif i == (self.n_notes/2 - 0.5):
+                    elif i == self.middle:
                         self.keyboard[i].weight_left = 0.5
                     else:
                         self.keyboard[i].weight_left = abs(
@@ -92,17 +102,15 @@ class Keyboard:
                 self.keyboard[i].weight_left = 999.9
 
     def calculate_weights_right(self):
-        for i in range(self.n_notes):
+        for i in range(self.n_keys):
             if i > self.pos_motor_left:
-                if i > self.pos_motor_right:
-                    self.keyboard[i].weight_right = 0.05
-                elif i == self.pos_motor_right:
+                if i >= self.pos_motor_right:
                     self.keyboard[i].weight_right = 0.0
                 else:
-                    if i > self.n_notes/2 - 0.5:
+                    if i > self.middle:
                         self.keyboard[i].weight_right = abs(
                             self.pos_motor_right - i) * 0.05
-                    elif i == (self.n_notes/2 - 0.5):
+                    elif i == self.middle:
                         self.keyboard[i].weight_right = 0.5
                     else:
                         self.keyboard[i].weight_right = abs(
@@ -112,8 +120,8 @@ class Keyboard:
 
     def initial_calculation(self):
         # Position motors to the middle of "their" middle keyboard
-        self.pos_motor_left = int((self.n_notes/2)/2)
-        self.pos_motor_right = int((self.n_notes/2)/2 + self.n_notes/2)
+        self.pos_motor_left = int(self.middle/2)
+        self.pos_motor_right = int(self.middle + (self.n_keys - self.middle)/2)
 
         self.keyboard[self.pos_motor_left].motor = "left"
         self.keyboard[self.pos_motor_right].motor = "right"
