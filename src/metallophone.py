@@ -131,5 +131,37 @@ class Keyboard:
         self.calculate_weights_right()
 
     def print_keyboard(self):
+        divider = "+-------"*self.n_keys + "+"
+        empty_row = "|       "*self.n_keys + "|"
+        notes = ""
+        motor = ""
+        weights_left = ""
+        weights_right = ""
+
         for key in self.keyboard:
-            print(key.note, key.motor, key.weight_left, key.weight_right)
+            if len(key.note) == 2:
+                notes += "|  " + key.note[0] + "  "
+            else:
+                notes += "|  " + key.note[0] + "   "
+
+            if key.motor != None:
+                motor += "| motor "
+            else:
+                motor += "|       "
+
+            weights_left += "| " + \
+                str(round(key.weight_left, 2)) + \
+                (6 - len(str(round(key.weight_left, 2))))*" "
+            weights_right += "| " + \
+                str(round(key.weight_right, 2)) + \
+                (6 - len(str(round(key.weight_right, 2))))*" "
+
+        print(divider)
+        print(empty_row)
+        print(notes + "|")
+        print(empty_row)
+        print(motor + "|")
+        print(empty_row)
+        print(weights_left + "|")
+        print(weights_right + "|")
+        print(divider)
