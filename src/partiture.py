@@ -19,13 +19,13 @@ class Partiture:
     def get_highest_note(self):
         highest_note = None
         for note_obj in self.partiture:
-            if highest_note is None or note_obj.note_value > highest_note.note_value:
+            if highest_note is None or note_obj.note_value < highest_note.note_value:
                 highest_note = note_obj
         return highest_note.note
 
     def get_lowest_note(self):
         lowest_note = None
         for note_obj in self.partiture:
-            if lowest_note is None or note_obj.note_value < lowest_note.note_value:
+            if lowest_note is None or note_obj.note_value > lowest_note.note_value:
                 lowest_note = note_obj
         return lowest_note.note

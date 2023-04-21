@@ -37,6 +37,8 @@ entire_keyboard = [
     ["a2#", "b2b"],
     ["a2"]]
 
+entire_keyboard.reverse()
+
 
 class Key:
     def __init__(self, note) -> None:
@@ -148,6 +150,20 @@ class Keyboard:
                 self.keyboard[ind_note].motor = "left"
                 self.pos_motor_left = ind_note
                 movements.append(["L", note])
+            elif self.keyboard[ind_note].weight_left == self.keyboard[ind_note].weight_right:
+                # Move the motor that is closest to the middle
+                if abs(self.pos_motor_left - self.middle) < abs(self.pos_motor_right - self.middle):
+                    # Move motor left
+                    self.keyboard[self.pos_motor_left].motor = None
+                    self.keyboard[ind_note].motor = "left"
+                    self.pos_motor_left = ind_note
+                    movements.append(["L", note])
+                else:
+                    # Move motor right
+                    self.keyboard[self.pos_motor_right].motor = None
+                    self.keyboard[ind_note].motor = "right"
+                    self.pos_motor_right = ind_note
+                    movements.append(["R", note])
             else:
                 # Move motor right
                 self.keyboard[self.pos_motor_right].motor = None
