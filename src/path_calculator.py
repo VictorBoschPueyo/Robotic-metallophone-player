@@ -9,3 +9,5 @@ if __name__ == "__main__":
     movements = kb.distribuite_movements()
 
     print("Done")
+
+ 
