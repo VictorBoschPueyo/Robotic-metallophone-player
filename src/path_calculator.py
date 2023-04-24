@@ -10,8 +10,7 @@ if __name__ == "__main__":
     movements = kb.distribuite_movements()
 
     chain = Movement_chain(movements)
+    chain.set_distances_and_directions()
     chain.print_movement_chain()
 
     print("Done")
-
- 
