@@ -31,23 +31,27 @@ class Movement_chain:
         movement_chain_right = []
         ind_left = 0
         ind_right = 0
-        for ind_move in len(self.movement):
+        for ind_move in range(len(self.movement)):
             if ind_move == left_notes[ind_left]:
                 # Move left motor
                 mov = Move(self.movement[left_notes[ind_left]][1], "P")
                 movement_chain_left.append(mov)
-                ind_left += 1
+                if ind_left < len(left_notes):
+                    ind_left += 1
                 # Right motor waiting
-                movement_chain_right.append(Move(self.movement[right_notes[ind_left]][1], "T"))
+                if ind_right < len(right_notes):
+                    movement_chain_right.append(Move(self.movement[right_notes[ind_right]][1], "T"))
+                else:
+                    movement_chain_right.append(None)
 
-                for i in mov.duration:
+                for i in range(mov.duration - 1):
                     if ind_left < len(left_notes):
                         movement_chain_left.append(Move(self.movement[left_notes[ind_left]][1], "T"))
                     else:
                         movement_chain_left.append(None)
 
                     if ind_right < len(right_notes):
-                        movement_chain_right.append(Move(self.movement[right_notes[ind_left]][1], "T"))
+                        movement_chain_right.append(Move(self.movement[right_notes[ind_right]][1], "T"))
                     else:
                         movement_chain_right.append(None)
 
@@ -55,22 +59,39 @@ class Movement_chain:
                 # Move right motor
                 mov = Move(self.movement[right_notes[ind_right]][1], "P")
                 movement_chain_right.append(mov)
-                ind_right += 1
+                if ind_right < len(right_notes):
+                    ind_right += 1
                 # Left motor waiting
-                movement_chain_left.append(Move(self.movement[left_notes[ind_right]][1], "T"))
+                if ind_left < len(left_notes):
+                    movement_chain_left.append(Move(self.movement[left_notes[ind_left]][1], "T"))
+                else:
+                    movement_chain_left.append(None)
 
-                for i in mov.duration:
+                for i in range(mov.duration - 1):
                     if ind_left < len(left_notes):
                         movement_chain_left.append(Move(self.movement[left_notes[ind_left]][1], "T"))
                     else:
                         movement_chain_left.append(None)
 
                     if ind_right < len(right_notes):
-                        movement_chain_right.append(Move(self.movement[right_notes[ind_left]][1], "T"))
+                        movement_chain_right.append(Move(self.movement[right_notes[ind_right]][1], "T"))
                     else:
                         movement_chain_right.append(None)
         
         return zip(movement_chain_left, movement_chain_right)
+
+    def print_movement_chain(self):
+        for i, move in enumerate(self.movement_chain):
+            print("Move: " + str(i))
+            if move[0] == None:
+                print("Left: No more notes")
+            else: 
+                print("Left: " + move[0].note + " " + move[0].option)
+            if move[1] == None:
+                print("Right: No more notes")
+            else:
+                print("Right: " + move[1].note + " " + move[1].option)
+            print("------------------")
 
 
         
