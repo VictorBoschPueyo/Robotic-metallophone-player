@@ -123,6 +123,53 @@ class Movement_chain:
                     move[1].distance, move[1].direction = self.calculate_distance_and_direction(
                         self.movement_chain[i-1][1].note, move[1].note)
 
+    def prepare_data_to_send(self):
+        # Prepare data to send to motors
+        # -- At the moment no transition movements are sent
+        data = []
+        for move in self.movement_chain:
+            if move[0] != None and move[0].option == "P":
+                info = "L" + move[0].direction + str(move[0].distance)
+                data.append(info)
+                continue
+            if move[1] != None and move[1].option == "P":
+                info = "R" + move[1].direction + str(move[1].distance)
+                data.append(info)
+                continue
+            if (move[0] != None and move[0].option == "T") and (move[1] != None and move[1].option == "T"):
+                info = "WAIT"
+                data.append(info)
+        return data
+
+    def print_partiture_movement(self):
+        n_left = 0
+        n_right = 0
+        for move in self.movement_chain:
+            if move[0] and move[0].option == "P":
+                if move[0].duration == 1:
+                    tipus = " corxera"
+                elif move[0].duration == 2:
+                    tipus = " negra"
+                elif move[0].duration == 4:
+                    tipus = " blanca"
+                elif move[0].duration == 8:
+                    tipus = " rodona"
+                print("Note: " + move[0].note + tipus + " (with left)")
+                n_left += 1
+            if move[1] and move[1].option == "P":
+                if move[1].duration == 1:
+                    tipus = " corxera"
+                elif move[1].duration == 2:
+                    tipus = " negra"
+                elif move[1].duration == 4:
+                    tipus = " blanca"
+                elif move[1].duration == 8:
+                    tipus = " rodona"
+                print("Note: " + move[1].note + tipus + " (with right)")
+                n_right += 1
+        print("Total notes with left: " + str(n_left))
+        print("Total notes with right: " + str(n_right))
+
     def print_movement_chain(self):
         for i, move in enumerate(self.movement_chain):
             print("Move: " + str(i))

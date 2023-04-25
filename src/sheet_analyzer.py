@@ -131,7 +131,7 @@ def analyze_sheet(img_path):
         i = 0
         j = 0
         while (i < len(penta_notes)):
-            if (penta_notes[i].rec.x > pentagrames[j].x and j < len(pentagrames)):
+            if (j < len(pentagrames) and penta_notes[i].rec.x > pentagrames[j].x):
                 r = pentagrames[j]
                 j += 1
                 if len(note_group) > 0:

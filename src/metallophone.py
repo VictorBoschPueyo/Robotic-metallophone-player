@@ -44,7 +44,9 @@ class Keyboard:
         notes = sorted(partiture.partiture, key=lambda x: x.note_value)
 
         # Get the middle note
-        middle_note = notes[len(notes)//2]
+        mid = len(notes)//2
+        middle_note = notes[mid]
+
         return self.get_note_position(middle_note.note)
 
     def calculate_weights_left(self):
@@ -95,6 +97,8 @@ class Keyboard:
 
     def distribuite_movements(self):
         movements = []
+        n_left = 0
+        n_right = 0
 
         # Distribuite movements
         for note in self.notes:
@@ -106,6 +110,7 @@ class Keyboard:
                 self.keyboard[ind_note].motor = "left"
                 self.pos_motor_left = ind_note
                 movements.append(["L", note])
+                n_left += 1
             elif self.keyboard[ind_note].weight_left == self.keyboard[ind_note].weight_right:
                 # Move the motor that is closest to the middle
                 if abs(self.pos_motor_left - self.middle) < abs(self.pos_motor_right - self.middle):
@@ -114,18 +119,21 @@ class Keyboard:
                     self.keyboard[ind_note].motor = "left"
                     self.pos_motor_left = ind_note
                     movements.append(["L", note])
+                    n_left += 1
                 else:
                     # Move motor right
                     self.keyboard[self.pos_motor_right].motor = None
                     self.keyboard[ind_note].motor = "right"
                     self.pos_motor_right = ind_note
                     movements.append(["R", note])
+                    n_right += 1
             else:
                 # Move motor right
                 self.keyboard[self.pos_motor_right].motor = None
                 self.keyboard[ind_note].motor = "right"
                 self.pos_motor_right = ind_note
                 movements.append(["R", note])
+                n_right += 1
 
             # Calculate weights
             self.calculate_weights_left()
@@ -133,6 +141,8 @@ class Keyboard:
 
             self.print_keyboard()
 
+        print("Left notes: " + str(n_left))
+        print("Right notes: " + str(n_right))
         return movements
 
     def print_keyboard(self):

@@ -1,6 +1,7 @@
 import serial
+import time
 
-class arduino_comunication:
+class ArduinoComunication:
         def __init__(self, port, baudrate):
             self.port = port         #  /dev/ttyUSB0
             self.baudrate = baudrate #  9600
@@ -17,3 +18,10 @@ class arduino_comunication:
     
         def close(self):
             self.ser.close()
+
+        def send_instructions(self, data):
+            for i in data:
+                self.write(i)
+                time.sleep(1)
+                
+            print("The partiture has been played!")
