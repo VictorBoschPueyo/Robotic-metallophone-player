@@ -11,10 +11,9 @@ if __name__ == "__main__":
     movements = kb.distribuite_movements()
 
     chain = Movement_chain(movements)
-    chain.set_distances_and_directions()
-    data = chain.prepare_data_to_send()
+    chain.print_movement_chain()
 
     arduino = ArduinoComunication("/dev/ttyUSB0", 9600)
-    arduino.send_instructions(data)
+    arduino.send_instructions(chain.movement_chain)
 
     print("Done")
