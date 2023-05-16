@@ -118,7 +118,7 @@ void loop()
     String left_move = input.substring(1, 3);  // ex. 09
     String left_play = input.substring(3, 4);  // ex. W
     String right_move = input.substring(5, 7); // ex. WW
-    String left_play = input.substring(7, 8);  // ex. P
+    String right_play = input.substring(7, 8);  // ex. P
 
     // OPTIONS
     // 1: move LEFT
