@@ -125,16 +125,16 @@ void loop()
     int option = set_motor_option(left_move, right_move);
 
     if (option == 1){
-      int left_position = left_instruction.toInt();
+      int left_position = left_move.toInt();
       move_left_hand(left_position);
     }
     else if (option == 2){
-      int right_position = right_instruction.toInt();
+      int right_position = right_move.toInt();
       move_right_hand(right_position);
     }
     else if (option == 3){
-      int left_position = left_instruction.toInt();
-      int right_position = right_instruction.toInt();
+      int left_position = left_move.toInt();
+      int right_position = right_move.toInt();
       move_motors(left_position, right_position);
     }
 
