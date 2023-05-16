@@ -70,13 +70,11 @@ void right_Drumstick_cling()
 }
 
 int set_motor_option(String left_ins,  String right_ins){
-  if (((left_ins == "WW") || (left_ins == "PP")) && ((right_ins == "WW") || (right_ins == "PP"))){
-    return 0;
-  }
-  else if (!((left_ins == "WW") || (left_ins == "PP")) && ((right_ins == "WW") || (right_ins == "PP"))){
+  // It's impossible for both to be "WW"
+  if (right_ins == "WW"){
     return 1;
   }
-  else if (((left_ins == "WW") || (left_ins == "PP")) && !((right_ins == "WW") || (right_ins == "PP"))){
+  else if (left_ins == "WW"){
     return 2;
   }
   else{
@@ -112,19 +110,19 @@ void loop()
 
   if (Serial.available() > 0)
   {
-    String input = Serial.readString(); // ex. L09RPP
+    String input = Serial.readString(); // ex. L09WRWWP
     Serial.println(input);
 
-    String left_instruction = input.substring(1, 3);  // ex. 09
-    String right_instruction = input.substring(4, 6); // ex. PP
+    String left_move = input.substring(1, 3);  // ex. 09
+    String left_play = input.substring(3, 4);  // ex. W
+    String right_move = input.substring(5, 7); // ex. WW
+    String left_play = input.substring(7, 8);  // ex. P
 
     // OPTIONS
-    // 0: do nothing
     // 1: move LEFT
     // 2: move RIGHT
     // 3: move BOTH
-    int option = set_motor_option(left_instruction, right_instruction);
-    Serial.println(option);
+    int option = set_motor_option(left_move, right_move);
 
     if (option == 1){
       int left_position = left_instruction.toInt();
@@ -140,12 +138,12 @@ void loop()
       move_motors(left_position, right_position);
     }
 
-    if (left_instruction == "PP")
+    if (left_play == "P")
     {
       left_Drumstick_cling();
     }
 
-    if (right_instruction == "PP")
+    if (right_play == "P")
     {
       right_Drumstick_cling();
     }

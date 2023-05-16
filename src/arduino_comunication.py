@@ -6,20 +6,18 @@ class ArduinoComunication:
     def __init__(self, port, baudrate):
         self.port = port  # /dev/ttyUSB0
         self.baudrate = baudrate  # 9600
-        '''self.ser = serial.Serial(self.port, self.baudrate, timeout=1)
-        self.ser.flush()'''
+        self.ser = serial.Serial(self.port, self.baudrate, timeout=1)
+        self.ser.reset_input_buffer()
 
     def write(self, data):
-        # self.ser.write(data.encode('utf-8'))
+        self.ser.write(data.encode('utf-8'))
         print(data)
 
     def read(self):
-        if self.ser.in_waiting > 0:
-            line = self.ser.readline().decode('utf-8').rstrip()
-            return line
+        return self.ser.readline().decode('utf-8').rstrip()
 
     def close(self):
-        # self.ser.close()
+        self.ser.close()
         print("The connection has been closed!")
 
     def data_distance(self, pos):
@@ -38,62 +36,54 @@ class ArduinoComunication:
             # If the movement is a transition and the motor is not in the correct position, move the motor
 
             # Instructions to move the motors
-            # -- LPP: Play the note in the left motor
-            # -- RPP: Play the note in the right motor
-            # -- LXX: Move the left motor to the position XX
-            # -- RXX: Move the right motor to the position XX
-            # -- LWW: Do not move the left motor
-            # -- RWW: Do not move the right motor
+            # -- LXXP: Move the left motor to the position XX and play the note
+            # -- LXXW: Move the left motor to the position XX and don't play the note
+            # -- LWWW: Left wait
+            # -- RXXP: Move the right motor to the position XX and play the note
+            # -- RXXW: Move the right motor to the position XX and don't play the note
+            # -- RWWW: Right wait
 
             data = ""
+            time.sleep(1)
+            print("START PLAYING")
 
             if move[0] != None:
                 if move[0].option == "P":
                     if (last_left_pos != move[0].note_pos):
-                        self.write(
-                            "L" + self.data_distance(move[0].note_pos) + "RWW")
+                        data += "L" + self.data_distance(move[0].note_pos) + "P"
                         last_left_pos = move[0].note_pos
-
-                        '''while (self.read() != "FINISH"):
-                            time.sleep(0.05)'''
-
-                        data += "LPP"
                     else:
-                        data += "LPP"
+                        data += "LWWP"
                 else:
                     if (last_left_pos != move[0].note_pos):
-                        data += "L" + self.data_distance(move[0].note_pos)
+                        data += "L" + self.data_distance(move[0].note_pos) + "W"
                         last_left_pos = move[0].note_pos
                     else:
-                        data += "LWW"
+                        data += "LWWW"
             else:
-                data += "LWW"
+                data += "LWWW"
 
             if move[1] != None:
                 if move[1].option == "P":
                     if (last_right_pos != move[1].note_pos):
-                        self.write(
-                            "LWW" + "R" + self.data_distance(move[1].note_pos))
+                        data += "R" + self.data_distance(move[1].note_pos) + "P"
                         last_right_pos = move[1].note_pos
 
-                        '''while (self.read() != "FINISH"):
-                            time.sleep(0.05)'''
-
-                        data += "RPP"
                     else:
-                        data += "RPP"
+                        data += "RWWP"
                 else:
                     if (last_right_pos != move[1].note_pos):
-                        data += "R" + self.data_distance(move[1].note_pos)
+                        data += "R" + self.data_distance(move[1].note_pos) + "W"
                         last_right_pos = move[1].note_pos
                     else:
-                        data += "RWW"
+                        data += "RWWW"
             else:
-                data += "RWW"
+                data += "RWWW"
 
-            self.write(data)
+            if data != "LWWWRWWW":
+                self.write(data)
 
-            time.sleep(0.5)
+            time.sleep(2)
 
         self.close()
         print("The partiture has been played!")
