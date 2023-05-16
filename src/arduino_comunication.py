@@ -27,8 +27,12 @@ class ArduinoComunication:
             return str(pos)
 
     def send_instructions(self, chain):
-        last_left_pos = 0
-        last_right_pos = 0
+        last_left_pos = 8
+        last_right_pos = 16
+        
+        self.write("L08WR16W")
+        time.sleep(1)
+        print("START PLAYING")
 
         for move in chain:
             # If the movement is a press and the motor is not in the correct position, move the motor and play the note
@@ -43,9 +47,8 @@ class ArduinoComunication:
             # -- RXXW: Move the right motor to the position XX and don't play the note
             # -- RWWW: Right wait
 
+            start = time.time()
             data = ""
-            time.sleep(1)
-            print("START PLAYING")
 
             if move[0] != None:
                 if move[0].option == "P":
@@ -80,10 +83,9 @@ class ArduinoComunication:
             else:
                 data += "RWWW"
 
-            if data != "LWWWRWWW":
-                self.write(data)
-
-            time.sleep(2)
+            while (time.time() - start) < 2:
+                if data != "LWWWRWWW":
+                    self.write(data)
 
         self.close()
         print("The partiture has been played!")
