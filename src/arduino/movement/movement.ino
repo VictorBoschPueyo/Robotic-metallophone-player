@@ -69,10 +69,7 @@ void right_Drumstick_cling()
   delay(500);
 }
 
-int setOption(String left_ins,  String right_ins){
-
-  
-
+int set_motor_option(String left_ins,  String right_ins){
   if (((left_ins == "WW") || (left_ins == "PP")) && ((right_ins == "WW") || (right_ins == "PP"))){
     return 0;
   }
@@ -121,43 +118,36 @@ void loop()
     String left_instruction = input.substring(1, 3);  // ex. 09
     String right_instruction = input.substring(4, 6); // ex. PP
 
-    int left_position;
-    int right_position;
-
-    if (left_instruction == "PP")
-    {
-      left_Drumstick_cling();
-    }
-    else if (left_instruction != "WW")
-    {
-      left_position = left_instruction.toInt();
-    }
-
-    if (right_instruction == "PP")
-    {
-      right_Drumstick_cling();
-    }
-    else if (right_instruction != "WW")
-    {
-      right_position = right_instruction.toInt();
-    }
-
     // OPTIONS
     // 0: do nothing
     // 1: move LEFT
     // 2: move RIGHT
     // 3: move BOTH
-    int option = setOption(left_instruction, right_instruction);
+    int option = set_motor_option(left_instruction, right_instruction);
     Serial.println(option);
 
     if (option == 1){
+      int left_position = left_instruction.toInt();
       move_left_hand(left_position);
     }
     else if (option == 2){
+      int right_position = right_instruction.toInt();
       move_right_hand(right_position);
     }
     else if (option == 3){
+      int left_position = left_instruction.toInt();
+      int right_position = right_instruction.toInt();
       move_motors(left_position, right_position);
+    }
+
+    if (left_instruction == "PP")
+    {
+      left_Drumstick_cling();
+    }
+
+    if (right_instruction == "PP")
+    {
+      right_Drumstick_cling();
     }
   }
 }
