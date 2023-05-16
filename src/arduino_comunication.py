@@ -31,7 +31,7 @@ class ArduinoComunication:
         last_right_pos = 16
         
         self.write("L08WR16W")
-        time.sleep(1)
+        time.sleep(2)
         print("START PLAYING")
 
         for move in chain:
@@ -83,9 +83,11 @@ class ArduinoComunication:
             else:
                 data += "RWWW"
 
-            while (time.time() - start) < 2:
-                if data != "LWWWRWWW":
-                    self.write(data)
+            if (time.time() - start) < 2:
+                time.sleep(2 - (time.time() - start))
+
+            if data != "LWWWRWWW":
+                self.write(data)
 
         self.close()
         print("The partiture has been played!")
