@@ -70,8 +70,10 @@ void right_Drumstick_cling()
 }
 
 int set_motor_option(String left_ins,  String right_ins){
-  // It's impossible for both to be "WW"
-  if (right_ins == "WW"){
+  if (left_ins == "WW" && right_ins == "WW"){
+    return 0;
+  }
+  else if (right_ins == "WW"){
     return 1;
   }
   else if (left_ins == "WW"){

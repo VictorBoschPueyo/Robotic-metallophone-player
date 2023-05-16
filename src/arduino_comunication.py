@@ -83,8 +83,8 @@ class ArduinoComunication:
             else:
                 data += "RWWW"
 
-            if (time.time() - start) < 2:
-                time.sleep(2 - (time.time() - start))
+            if (time.time() - start) < 1.5:
+                time.sleep(1.5 - (time.time() - start))
 
             if data != "LWWWRWWW":
                 self.write(data)
