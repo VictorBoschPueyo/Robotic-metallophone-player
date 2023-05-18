@@ -17,7 +17,7 @@ points = []
 # Define the event callback function
 
 
-def click_event(event, x, y, flags, param):
+def click_event(event, x, y):
     # Check if left mouse button is clicked
     if event == cv2.EVENT_LBUTTONDOWN:
         # Append the clicked point to the list
