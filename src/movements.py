@@ -5,7 +5,6 @@ class Move:
     def __init__(self, note, option) -> None:
         self.note = note.note
         self.option = option  # T = transition, P = play
-        self.in_position = False
 
         self.note_pos = get_note_index(self.note)
         self.duration = self.set_duration(note.duration)
@@ -25,6 +24,7 @@ class Movement_chain:
     def __init__(self, movement) -> None:
         self.movement = movement
         self.movement_chain = self.calculate_movement_chain()
+        self.data = self.prepare_data_to_send()
 
     def calculate_movement_chain(self):
         left_notes = [i for i, move in enumerate(
@@ -93,22 +93,69 @@ class Movement_chain:
         return list(zip(movement_chain_left, movement_chain_right))
 
     def prepare_data_to_send(self):
-        # Prepare data to send to motors
-        # -- At the moment no transition movements are sent
         data = []
+        last_left_pos = 8
+        last_right_pos = 16
+
         for move in self.movement_chain:
-            if move[0] != None and move[0].option == "P":
-                info = "L" + str(move[0].note_pos)
-                data.append(info)
-                continue
-            if move[1] != None and move[1].option == "P":
-                info = "R" + str(move[1].note_pos)
-                data.append(info)
-                continue
-            if (move[0] != None and move[0].option == "T") and (move[1] != None and move[1].option == "T"):
-                info = "WAIT"
-                data.append(info)
+            # If the movement is a press and the motor is not in the correct position, move the motor and play the note
+            # -- If the motor is in the correct position, don't move it, just play the note
+            # If the movement is a transition and the motor is not in the correct position, move the motor
+
+            # Instructions to move the motors
+            # -- LXXP: Move the left motor to the position XX and play the note
+            # -- LXXW: Move the left motor to the position XX and don't play the note
+            # -- LWWW: Left wait
+            # -- RXXP: Move the right motor to the position XX and play the note
+            # -- RXXW: Move the right motor to the position XX and don't play the note
+            # -- RWWW: Right wait
+
+            instr = ""
+
+            if move[0] != None:
+                if move[0].option == "P":
+                    if (last_left_pos != move[0].note_pos):
+                        instr += "L" + str(move[0].note_pos).zfill(2) + "P"
+                        last_left_pos = move[0].note_pos
+                    else:
+                        instr += "LWWP"
+                else:
+                    if (last_left_pos != move[0].note_pos):
+                        instr += "L" + str(move[0].note_pos).zfill(2) + "W"
+                        last_left_pos = move[0].note_pos
+                    else:
+                        instr += "LWWW"
+            else:
+                instr += "LWWW"
+
+            if move[1] != None:
+                if move[1].option == "P":
+                    if (last_right_pos != move[1].note_pos):
+                        instr += "R" + str(move[1].note_pos).zfill(2) + "P"
+                        last_right_pos = move[1].note_pos
+
+                    else:
+                        instr += "RWWP"
+                else:
+                    if (last_right_pos != move[1].note_pos):
+                        instr += "R" + str(move[1].note_pos).zfill(2) + "W"
+                        last_right_pos = move[1].note_pos
+                    else:
+                        instr += "RWWW"
+            else:
+                instr += "RWWW"
+
+            data.append(instr)
         return data
+
+    def prepare_send_full_data(self):
+        # First 3 characters are the number of movements
+        data_send = str(len(self.data)).zfill(3)
+
+        # Then concat the data in a single string
+        data_send += "".join(self.data)
+
+        return data_send
 
     def print_partiture_movement(self):
         n_left = 0

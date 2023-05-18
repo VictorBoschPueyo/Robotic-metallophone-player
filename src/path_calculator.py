@@ -10,10 +10,13 @@ if __name__ == "__main__":
     kb = Keyboard(partiture)
     movements = kb.distribuite_movements()
 
-    chain = Movement_chain(movements)
-    chain.print_movement_chain()
+    moves = Movement_chain(movements)
+    print(moves.prepare_send_full_data())
 
     arduino = ArduinoComunication("/dev/ttyUSB0", 9600)
-    arduino.send_instructions(chain.movement_chain)
+
+    arduino.send_full_data(moves.prepare_send_full_data())
+
+    # arduino.send_move_by_move(moves.data)
 
     print("Done")
