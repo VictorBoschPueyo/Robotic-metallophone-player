@@ -167,6 +167,12 @@ void loop()
       // Get time in the beginning of the move
       int start = millis();
 
+      // Check if the move is a rest
+      if (input == "LWWWRWWW"){
+        delay(1500);
+        continue;
+      }
+
       // Split the move in left and right
       String left_move = input.substring(1, 3);  // ex. 09
       String left_play = input.substring(3, 4);  // ex. W
