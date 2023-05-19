@@ -35,7 +35,16 @@ class ArduinoComunication:
         self.close()
         print("The partiture has been played!")
 
-    def send_full_data(self, data):
+    def send_full_data(self, moves):
+        # Init the arduino
+        self.write("L08WR16W")
+        time.sleep(2)
+        print("START PLAYING")
+
+        # Send the data
+        data = "".join(moves)
         self.write(data)
+
+
         self.close()
         print("The partiture has been played!")
