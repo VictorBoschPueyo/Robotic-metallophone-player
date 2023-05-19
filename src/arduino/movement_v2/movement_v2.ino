@@ -24,6 +24,8 @@ int left_positions[25] = {-635, -555, -475, -395, -315, -235, -155, -75, 0, 85, 
 int right_positions[25] = {0, 0, 0, -1035, -955, -875, -795, -710, -640, -555, -480, -400, 315, -233, -160, -80, 0, 75, 155, 234, 315, 390, 480, 555, 635};
 
 // Functions
+
+// Move left hand
 void move_left_hand(int pos)
 {
   left_hand.moveTo(left_positions[pos]);
@@ -33,6 +35,7 @@ void move_left_hand(int pos)
   }
 }
 
+// Move right hand
 void move_right_hand(int pos)
 {
   right_hand.moveTo(right_positions[pos]);
@@ -42,6 +45,7 @@ void move_right_hand(int pos)
   }
 }
 
+// Move both motors
 void move_motors(int left_pos, int right_pos){
   left_hand.moveTo(left_positions[left_pos]);
   right_hand.moveTo(right_positions[right_pos]);
@@ -53,6 +57,7 @@ void move_motors(int left_pos, int right_pos){
   } 
 }
 
+// Cling left drumstick
 void left_Drumstick_cling()
 {
   servo_left.write(85);
@@ -61,6 +66,7 @@ void left_Drumstick_cling()
   delay(500);
 }
 
+// Cling right drumstick
 void right_Drumstick_cling()
 {
   servo_right.write(91);
@@ -107,6 +113,9 @@ int set_motor_option(String left_ins,  String right_ins){
 // ex L09WRWWPL09WRWWPL09WRWWP
 // -> [L09WRWWP, L09WRWWP, L09WRWWP]
 String* split_input(String input){
+  int size = input.length() / 8;
+  String* moves = new String[size];
+
   int index = 0;
   for (int i = 0; i < input.length(); i += 8){
     moves[index] = input.substring(i, i + 8);
