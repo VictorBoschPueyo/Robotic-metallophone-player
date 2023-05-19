@@ -157,9 +157,12 @@ void loop()
     // Split the input string in a list of moves
     String* moves = split_input(data);
 
+    // Get the number of moves
+    int n = data.length()/8;
+
     // Execute each move
 
-    for (int i = 0; i < sizeof(moves); i++){ // ex. L09WRWWP
+    for (int i = 0; i < n; i++){ // ex. L09WRWWP
 
       String input = moves[i];
       Serial.println(input);
