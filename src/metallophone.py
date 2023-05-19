@@ -144,6 +144,7 @@ class Keyboard:
         print("Left notes: " + str(n_left))
         print("Right notes: " + str(n_right))
         return movements
+    
 
     def print_keyboard(self):
         divider = "+-------"*self.n_keys + "+"

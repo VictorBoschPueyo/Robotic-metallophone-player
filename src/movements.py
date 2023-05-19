@@ -149,13 +149,7 @@ class Movement_chain:
         return data
 
     def prepare_send_full_data(self):
-        # First 3 characters are the number of movements
-        data_send = str(len(self.data)).zfill(3)
-
-        # Then concat the data in a single string
-        data_send += "".join(self.data)
-
-        return data_send
+        return "".join(self.data)
 
     def print_partiture_movement(self):
         n_left = 0
