@@ -10,7 +10,7 @@ from random import randint
 
 
 ######################## Read templates ########################
-path = "masks"
+path = "utils/masks"
 penta_files = [
     path + "/penta2.png",
     path + "/penta.png"]
