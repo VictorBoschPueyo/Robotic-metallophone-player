@@ -22,8 +22,7 @@ def undisort_img(img):
 def wrap_img(img):
     ref_img = cv2.imread("sheets/himne_alegria_full.png")
 
-    # Get the images sizes
-    h, w = img.shape[:2]
+    # Get ref image size
     h_ref, w_ref = ref_img.shape[:2]
 
     # Define the corners of the source image
@@ -56,24 +55,24 @@ def binarize_img(img):
 
     kernel_v = np.ones((1, 2), np.uint8)
     binarized = cv2.dilate(binarized, kernel_v, iterations=1)
-    '''
-    binarized = cv2.erode(binarized, kernel_h, iterations=1)
-    binarized = cv2.erode(binarized, kernel_v, iterations=1)'''
 
     # Return the binarized image
     return binarized
 
 
-img = cv2.imread("sheets/foto_himne_alegria.jpg")
+def partiure_std(img_path):
+    img = cv2.imread(img_path)
 
-# Undisort the image
-img = undisort_img(img)
+    # Undisort the image
+    img = undisort_img(img)
 
-# Wrap the image
-img = wrap_img(img)
+    # Wrap the image
+    img = wrap_img(img)
 
-# Binarize the image
-img = binarize_img(img)
+    # Binarize the image
+    img = binarize_img(img)
 
-# Save the image
-cv2.imwrite("sheets/himne_alegria_bin.png", img)
+    # Save the image
+    cv2.imwrite("sheets/himne_alegria_std.png", img)
+
+    return img
