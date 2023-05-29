@@ -12,6 +12,12 @@ from src.arduino_comunication import ArduinoComunication
 
 if __name__ == '__main__':
     # Deal with arguments
+    sheet = "sheets/himne_alegria.png"
+    display = False
+    paralelize = False
+    mode = "bulk"
+    reference = False 
+
     if len(sys.argv) > 2:
         opts = [opt for opt in sys.argv[1:] if opt.startswith("-")]
         args = [arg for arg in sys.argv[1:] if not arg.startswith("-")]
@@ -22,46 +28,48 @@ if __name__ == '__main__':
         # -d: display graphs
         # -p: paralelize
         # -mode: mode (streaming/bulk)
+        # -r: reference image
         #####################################
 
         if "-s" in opts:
             sheet = "sheets/" + all[all.index("-s") + 1]
-        else:
-            sheet = "sheets/foto_himne_alegria.jpg"
-
+ 
         if "-d" in opts:
             display = True
-        else:
-            display = False
 
         if "-p" in opts:
             paralelize = True
-        else:
-            paralelize = False
 
         if "-mode" in opts:
             mode = all[all.index("-mode") + 1]
-        else:
-            mode = "bulk"
+
+        if "-r" in opts:
+            reference = True
 
     print("Arguments:")
-    print("--Sheet: ", sheet)
-    print("--Display: ", display)
-    print("--Paralelize: ", paralelize)
-    print("--Mode: ", mode)
+    print("--Sheet: \t", sheet)
+    print("--Display: \t", display)
+    print("--Paralelize: \t", paralelize)
+    print("--Mode: \t", mode)
+    print("--Reference: \t", reference)
+    print("----------------------\n")
 
     ##################
     ## MAIN PROGRAM ##
     ##################
     start = time.time()
+
     # Read sheet
     img = cv2.imread(sheet)
 
-    # Standardize the sheet
-    img_std = partiure_std(img)
+    if reference:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    else:
+        # Standardize the sheet
+        img = partiure_std(img)
 
     # Analyze the sheet
-    partiture = analyze_sheet(img_std, img, display)
+    partiture = analyze_sheet(img, img, display, paralelize)
 
     # Get the movements
     kb = Keyboard(partiture)
@@ -71,15 +79,15 @@ if __name__ == '__main__':
     moves = Movement_chain(movements)
 
 
+    print("Algorithm time: ", time.time() - start)
+
     # Send the data to the arduino
-    '''arduino = ArduinoComunication("/dev/ttyUSB0", 9600)
+    arduino = ArduinoComunication("/dev/ttyUSB0", 9600)
 
     if mode == "streaming":
         arduino.send_move_by_move(moves.data)
     else:
-        arduino.send_full_data(moves.data)'''
-
-    print("Time: ", time.time() - start)
+        arduino.send_full_data(moves.data)
 
 
 

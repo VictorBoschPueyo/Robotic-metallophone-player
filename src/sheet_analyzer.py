@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from random import randint
+from multiprocessing import Pool
 
 from src.rectangle import Rectangle
 from src.note import Note
@@ -50,24 +51,28 @@ blanca_lower, blanca_upper, blanca_thresh = 50, 150, 0.70
 rodona_lower, rodona_upper, rodona_thresh = 50, 150, 0.70
 #################################################################
 
+def detect_parallel(args):
+    img, img_gray, label, imgs, lower, upper, thresh, display = args
+    return detect(img, img_gray, label, imgs, lower, upper, thresh, display)
 
-def analyze_sheet(img_gray, img, display=False):
+
+def analyze_sheet(img_gray, img, display=False, paralelize=False):
 
     img_width, _ = img_gray.shape[::-1]
 
     # Analyse the pentagram
-    print("Matching pentagram image...")
+    print("Analysing pentagram...")
     recs_penta = locate_images(
         img_gray, penta_imgs, penta_lower, penta_upper, penta_thresh, display)
 
-    print("Filtering weak pentagram matches...")
+    # Filtering weak pentagram matches
     recs_penta = [j for i in recs_penta for j in i]
     heights = [r.y for r in recs_penta] + [0]
     histo = [heights.count(i) for i in range(0, max(heights) + 1)]
     avg = np.mean(list(set(histo)))
     recs_penta = [r for r in recs_penta if histo[r.y] > avg]
 
-    print("Merging pentagram image results...")
+    # Merging pentagram image results
     recs_penta = merge_recs(recs_penta, 0.01)
     penta_recs_img = img.copy()
     for r in recs_penta:
@@ -76,7 +81,7 @@ def analyze_sheet(img_gray, img, display=False):
     if display:
         cv2.imwrite('penta_recs_img.png', penta_recs_img)
 
-    print("Discovering staff locations...")
+    # Discovering staff locations
     penta_boxes = merge_recs([Rectangle(0, r.y, img_width, r.h)
                              for r in recs_penta], 0.01)
     penta_boxes_img = img.copy()
@@ -87,16 +92,40 @@ def analyze_sheet(img_gray, img, display=False):
         cv2.imwrite('penta_boxes_img.png', penta_boxes_img)
 
     # Detection with every template
-    recs_sost = detect(img, img_gray, "sost", sost_imgs,
-                       sost_lower, sost_upper, sost_thresh, display)
-    recs_bem = detect(img, img_gray, "bem", bem_imgs,
-                      bem_lower, bem_upper, bem_thresh, display)
-    recs_negra = detect(img, img_gray, "negra", negra_imgs,
-                        negra_lower, negra_upper, negra_thresh, display)
-    recs_blanca = detect(img, img_gray, "blanca", blanca_imgs,
-                         blanca_lower, blanca_upper, blanca_thresh, display)
-    recs_rodona = detect(img, img_gray, "rodona", rodona_imgs,
-                         rodona_lower, rodona_upper, rodona_thresh, display)
+    print("Analysing notes and figures...")
+    if paralelize:
+        detections = [
+            (img, img_gray, "sost", sost_imgs, sost_lower, sost_upper, sost_thresh, display),
+            (img, img_gray, "bem", bem_imgs, bem_lower, bem_upper, bem_thresh, display),
+            (img, img_gray, "negra", negra_imgs, negra_lower, negra_upper, negra_thresh, display),
+            (img, img_gray, "blanca", blanca_imgs, blanca_lower, blanca_upper, blanca_thresh, display),
+            (img, img_gray, "rodona", rodona_imgs, rodona_lower, rodona_upper, rodona_thresh, display)
+        ]
+
+        # Create a pool of workers
+        pool = Pool()
+
+        # Execute the detect function calls in parallel
+        results = pool.map(detect_parallel, detections)
+
+        # Close the pool and wait for the processes to finish
+        pool.close()
+        pool.join()
+
+        # Retrieve the results
+        recs_sost, recs_bem, recs_negra, recs_blanca, recs_rodona = results
+    else:
+        recs_sost = detect(img, img_gray, "sost", sost_imgs,
+                        sost_lower, sost_upper, sost_thresh, display)
+        recs_bem = detect(img, img_gray, "bem", bem_imgs,
+                        bem_lower, bem_upper, bem_thresh, display)
+        recs_negra = detect(img, img_gray, "negra", negra_imgs,
+                            negra_lower, negra_upper, negra_thresh, display)
+        recs_blanca = detect(img, img_gray, "blanca", blanca_imgs,
+                            blanca_lower, blanca_upper, blanca_thresh, display)
+        recs_rodona = detect(img, img_gray, "rodona", rodona_imgs,
+                            rodona_lower, rodona_upper, rodona_thresh, display)
+    
 
     # Create all notes and ordenate them
     note_groups = []

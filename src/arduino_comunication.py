@@ -1,23 +1,21 @@
 import serial
 import time
 
+from src.functions import load_animation
 
 class ArduinoComunication:
     def __init__(self, port, baudrate):
         self.port = port  # /dev/ttyUSB0
         self.baudrate = baudrate  # 9600
-        self.ser = serial.Serial(self.port, self.baudrate, timeout=1)
-        self.ser.reset_input_buffer()
+        #self.ser = serial.Serial(self.port, self.baudrate, timeout=1)
+        # self.ser.reset_input_buffer()
 
     def write(self, data):
-        self.ser.write(data.encode('utf-8'))
-        print(data)
-
-    def read(self):
-        return self.ser.readline().decode('utf-8').rstrip()
+        # self.ser.write(data.encode('utf-8'))
+        print("Instruction: ", data)
 
     def close(self):
-        self.ser.close()
+        # self.ser.close()
         print("The connection has been closed!")
 
     def send_move_by_move(self, moves):
@@ -38,11 +36,11 @@ class ArduinoComunication:
         # Init the arduino
         self.write("L08WR16W")
         time.sleep(2)
-        print("START PLAYING")
 
         # Send the data
         data = "".join(moves)
         self.write(data)
 
+        load_animation(len(moves) * 30)
 
         self.close()

@@ -47,8 +47,6 @@ class Keyboard:
         mid = len(notes)//2
         middle_note = notes[mid]
 
-        print("Middle note: ", middle_note.note)
-
         return self.get_note_position(middle_note.note)
 
     def calculate_weights_left(self):
@@ -61,7 +59,8 @@ class Keyboard:
                         self.keyboard[i].weight_left = abs(
                             self.pos_motor_left - i) * 0.05
                     elif i == self.middle:
-                        self.keyboard[i].weight_left = 0.5
+                        self.keyboard[i].weight_left = abs(
+                            self.pos_motor_left - i) * 0.05 + 0.1
                     else:
                         self.keyboard[i].weight_left = abs(
                             self.pos_motor_left - i) * 0.1 + 0.5
@@ -78,7 +77,8 @@ class Keyboard:
                         self.keyboard[i].weight_right = abs(
                             self.pos_motor_right - i) * 0.05
                     elif i == self.middle:
-                        self.keyboard[i].weight_right = 0.5
+                        self.keyboard[i].weight_right = abs(
+                            self.pos_motor_right - i) * 0.05 + 0.1
                     else:
                         self.keyboard[i].weight_right = abs(
                             self.pos_motor_right - i) * 0.1 + 0.5
@@ -103,7 +103,7 @@ class Keyboard:
         n_right = 0
 
         # Distribuite movements
-        for note in self.notes:
+        for i, note in enumerate(self.notes):
             ind_note = self.get_note_position(note.note)
 
             if self.keyboard[ind_note].weight_left < self.keyboard[ind_note].weight_right:
@@ -122,13 +122,46 @@ class Keyboard:
                     self.pos_motor_left = ind_note
                     movements.append(["L", note])
                     n_left += 1
-                else:
+                elif abs(self.pos_motor_left - self.middle) > abs(self.pos_motor_right - self.middle):
                     # Move motor right
                     self.keyboard[self.pos_motor_right].motor = None
                     self.keyboard[ind_note].motor = "right"
                     self.pos_motor_right = ind_note
                     movements.append(["R", note])
                     n_right += 1
+                else:
+                    # Move the motor that will not play the next note
+                    decided = False
+                    j = 1
+                    while not decided and i+j < len(self.notes):
+                        next_note_pos = self.get_note_position(self.notes[i+j].note)
+                        if (next_note_pos == ind_note) or (next_note_pos == self.pos_motor_left) or (next_note_pos == self.pos_motor_right):
+                            j += 1
+                        elif next_note_pos > ind_note:
+                            # Move motor left
+                            self.keyboard[self.pos_motor_left].motor = None
+                            self.keyboard[ind_note].motor = "left"
+                            self.pos_motor_left = ind_note
+                            movements.append(["L", note])
+                            n_left += 1
+                            decided = True
+                        else:
+                            # Move motor right
+                            self.keyboard[self.pos_motor_right].motor = None
+                            self.keyboard[ind_note].motor = "right"
+                            self.pos_motor_right = ind_note
+                            movements.append(["R", note])
+                            n_right += 1
+                            decided = True
+
+                    if not decided:
+                        # Move motor left
+                        self.keyboard[self.pos_motor_left].motor = None
+                        self.keyboard[ind_note].motor = "left"
+                        self.pos_motor_left = ind_note
+                        movements.append(["L", note])
+                        n_left += 1
+
             else:
                 # Move motor right
                 self.keyboard[self.pos_motor_right].motor = None
@@ -144,8 +177,10 @@ class Keyboard:
             if display:
                 self.print_keyboard()
 
-        print("Left notes: " + str(n_left))
-        print("Right notes: " + str(n_right))
+        if display:
+            print("Left notes: " + str(n_left))
+            print("Right notes: " + str(n_right))
+            
         return movements
     
 
