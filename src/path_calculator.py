@@ -4,7 +4,7 @@ from movements import Movement_chain
 from arduino_comunication import ArduinoComunication
 
 if __name__ == "__main__":
-    img_path = "sheets/himne_alegria_bin.png"
+    img_path = "sheets/himne_alegria.png"
     partiture = analyze_sheet(img_path)
 
     kb = Keyboard(partiture)
@@ -12,8 +12,8 @@ if __name__ == "__main__":
 
     moves = Movement_chain(movements)
 
-    arduino = ArduinoComunication("/dev/ttyUSB0", 9600)
+    #arduino = ArduinoComunication("/dev/ttyUSB0", 9600)
 
-    arduino.send_full_data(moves.data)
+    #arduino.send_full_data(moves.data)
 
     print("Done")

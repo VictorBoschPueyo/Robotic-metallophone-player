@@ -148,9 +148,6 @@ class Movement_chain:
             data.append(instr)
         return data
 
-    def prepare_send_full_data(self):
-        return "".join(self.data)
-
     def print_partiture_movement(self):
         n_left = 0
         n_right = 0

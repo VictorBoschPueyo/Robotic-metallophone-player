@@ -47,6 +47,8 @@ class Keyboard:
         mid = len(notes)//2
         middle_note = notes[mid]
 
+        print("Middle note: ", middle_note.note)
+
         return self.get_note_position(middle_note.note)
 
     def calculate_weights_left(self):
