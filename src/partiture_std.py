@@ -60,9 +60,7 @@ def binarize_img(img):
     return binarized
 
 
-def partiure_std(img_path):
-    img = cv2.imread(img_path)
-
+def partiure_std(img):
     # Undisort the image
     img = undisort_img(img)
 
@@ -71,8 +69,5 @@ def partiure_std(img_path):
 
     # Binarize the image
     img = binarize_img(img)
-
-    # Save the image
-    cv2.imwrite("sheets/himne_alegria_std.png", img)
 
     return img

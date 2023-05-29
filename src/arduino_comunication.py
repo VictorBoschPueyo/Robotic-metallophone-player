@@ -33,7 +33,6 @@ class ArduinoComunication:
             time.sleep(1)
 
         self.close()
-        print("The partiture has been played!")
 
     def send_full_data(self, moves):
         # Init the arduino
@@ -47,4 +46,3 @@ class ArduinoComunication:
 
 
         self.close()
-        print("The partiture has been played!")

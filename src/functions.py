@@ -1,14 +1,14 @@
 import cv2
 
-from rectangle import Rectangle
-from best_fit import fit
+from src.rectangle import Rectangle
+from src.best_fit import fit
 
 
-def locate_images(img, templates, start, stop, threshold):
+def locate_images(img, templates, start, stop, threshold, display=False):
     '''
     Creates a Rectangle for each match found with the function fit()
     '''
-    locations, scale = fit(img, templates, start, stop, threshold)
+    locations, scale = fit(img, templates, start, stop, threshold, display)
     img_locations = []
     for i in range(len(templates)):
         w, h = templates[i].shape[::-1]
@@ -43,18 +43,19 @@ def merge_recs(recs, threshold):
     return filtered_recs
 
 
-def detect(img, img_gray, figure_name, figure_imgs, lower, upper, thresh):
+def detect(img, img_gray, figure_name, figure_imgs, lower, upper, thresh, display=False):
     print("Matching " + figure_name + " image...")
     # Locate the figures in the image
-    recs = locate_images(img_gray, figure_imgs, lower, upper, thresh)
+    recs = locate_images(img_gray, figure_imgs, lower, upper, thresh, display)
 
     print("Merging " + figure_name + " image results...")
     recs = merge_recs([j for i in recs for j in i], 0.5)
 
     # Draw every rectangle in the image
-    recs_img = img.copy()
-    for r in recs:
-        r.draw(recs_img, (0, 0, 255), 2)
-    cv2.imwrite(figure_name + '_recs_img.png', recs_img)
+    if display:
+        recs_img = img.copy()
+        for r in recs:
+            r.draw(recs_img, (0, 0, 255), 2)
+        cv2.imwrite(figure_name + '_recs_img.png', recs_img)
 
     return recs

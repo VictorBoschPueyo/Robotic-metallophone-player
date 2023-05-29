@@ -1,12 +1,12 @@
 import cv2
 import numpy as np
-
-from rectangle import Rectangle
-from note import Note
-from partiture import Partiture
-from functions import locate_images, merge_recs, detect
-
 from random import randint
+
+from src.rectangle import Rectangle
+from src.note import Note
+from src.partiture import Partiture
+from src.functions import locate_images, merge_recs, detect
+
 
 
 ######################## Read templates ########################
@@ -51,22 +51,14 @@ rodona_lower, rodona_upper, rodona_thresh = 50, 150, 0.70
 #################################################################
 
 
-def analyze_sheet(img_path):
-    img_file = "sheets/himne_alegria.png"
-    img = cv2.imread(img_path, 0)
-
-    # aqui ja arribara la imatge filtrada d'abans
-    img_gray = img  # cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    img = cv2.cvtColor(img_gray, cv2.COLOR_GRAY2RGB)
-    ret, img_gray = cv2.threshold(img_gray, 127, 255, cv2.THRESH_BINARY)
-    ###
+def analyze_sheet(img_gray, img, display=False):
 
     img_width, _ = img_gray.shape[::-1]
 
     # Analyse the pentagram
     print("Matching pentagram image...")
     recs_penta = locate_images(
-        img_gray, penta_imgs, penta_lower, penta_upper, penta_thresh)
+        img_gray, penta_imgs, penta_lower, penta_upper, penta_thresh, display)
 
     print("Filtering weak pentagram matches...")
     recs_penta = [j for i in recs_penta for j in i]
@@ -81,7 +73,8 @@ def analyze_sheet(img_path):
     for r in recs_penta:
         r.draw(penta_recs_img, (0, 0, 255), 2)
 
-    cv2.imwrite('penta_recs_img.png', penta_recs_img)
+    if display:
+        cv2.imwrite('penta_recs_img.png', penta_recs_img)
 
     print("Discovering staff locations...")
     penta_boxes = merge_recs([Rectangle(0, r.y, img_width, r.h)
@@ -89,19 +82,21 @@ def analyze_sheet(img_path):
     penta_boxes_img = img.copy()
     for r in penta_boxes:
         r.draw(penta_boxes_img, (0, 0, 255), 2)
-    cv2.imwrite('penta_boxes_img.png', penta_boxes_img)
+
+    if display:
+        cv2.imwrite('penta_boxes_img.png', penta_boxes_img)
 
     # Detection with every template
     recs_sost = detect(img, img_gray, "sost", sost_imgs,
-                       sost_lower, sost_upper, sost_thresh)
+                       sost_lower, sost_upper, sost_thresh, display)
     recs_bem = detect(img, img_gray, "bem", bem_imgs,
-                      bem_lower, bem_upper, bem_thresh)
+                      bem_lower, bem_upper, bem_thresh, display)
     recs_negra = detect(img, img_gray, "negra", negra_imgs,
-                        negra_lower, negra_upper, negra_thresh)
+                        negra_lower, negra_upper, negra_thresh, display)
     recs_blanca = detect(img, img_gray, "blanca", blanca_imgs,
-                         blanca_lower, blanca_upper, blanca_thresh)
+                         blanca_lower, blanca_upper, blanca_thresh, display)
     recs_rodona = detect(img, img_gray, "rodona", rodona_imgs,
-                         rodona_lower, rodona_upper, rodona_thresh)
+                         rodona_lower, rodona_upper, rodona_thresh, display)
 
     # Create all notes and ordenate them
     note_groups = []
@@ -145,13 +140,15 @@ def analyze_sheet(img_path):
                 i += 1
         note_groups.append(note_group)
 
-    for r in penta_boxes:
-        r.draw(img, (0, 0, 255), 2)
-    for r in recs_sost:
-        r.draw(img, (0, 0, 255), 2)
-    flat_recs_img = img.copy()
-    for r in recs_bem:
-        r.draw(img, (0, 0, 255), 2)
+    if display:
+        for r in penta_boxes:
+            r.draw(img, (0, 0, 255), 2)
+        for r in recs_sost:
+            r.draw(img, (0, 0, 255), 2)
+        for r in recs_bem:
+            r.draw(img, (0, 0, 255), 2)
 
-    cv2.imwrite('identification.png', img)
+        cv2.imwrite('identification.png', img)
+
+
     return Partiture(note_groups)

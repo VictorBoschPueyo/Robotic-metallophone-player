@@ -1,4 +1,4 @@
-from constants import *
+from src.constants import *
 
 
 class Key:
@@ -97,7 +97,7 @@ class Keyboard:
         self.calculate_weights_left()
         self.calculate_weights_right()
 
-    def distribuite_movements(self):
+    def distribuite_movements(self, display=False):
         movements = []
         n_left = 0
         n_right = 0
@@ -141,7 +141,8 @@ class Keyboard:
             self.calculate_weights_left()
             self.calculate_weights_right()
 
-            self.print_keyboard()
+            if display:
+                self.print_keyboard()
 
         print("Left notes: " + str(n_left))
         print("Right notes: " + str(n_right))

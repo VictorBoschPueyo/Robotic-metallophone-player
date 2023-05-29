@@ -1,5 +1,3 @@
-from rectangle import Rectangle
-
 note_step = 0.0625
 
 notes_map = {
