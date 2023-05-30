@@ -7,12 +7,13 @@ from src.sheet_analyzer import analyze_sheet
 from src.metallophone import Keyboard
 from src.movements import Movement_chain
 from src.arduino_comunication import ArduinoComunication
+from src.camera import take_picture
 
 
 
 if __name__ == '__main__':
     # Deal with arguments
-    sheet = "sheets/himne_alegria.png"
+    sheet = None
     display = False
     paralelize = False
     mode = "bulk"
@@ -59,6 +60,11 @@ if __name__ == '__main__':
     ##################
     start = time.time()
 
+    # Take picture
+    if sheet is None:
+        take_picture()
+        sheet = "sheets/img.jpg"
+        
     # Read sheet
     img = cv2.imread(sheet)
 
