@@ -172,7 +172,7 @@ void loop()
 
       // Check if the move is a rest
       if (input == "LWWWRWWW"){
-        delay(1500);
+        delay(500);
         continue;
       }
 
@@ -200,15 +200,15 @@ void loop()
       }
 
       // Wait until 1 seconds have passed
-      if (millis() - start < 1000){
-        delay(1000 - (millis() - start));
+      if (millis() - start < 400){
+        delay(400 - (millis() - start));
       }
 
       // Play drumsticks
       play_drumsticks(left_play, right_play);
 
 
-      delay(500);
+      delay(100);
     }
   }
 }

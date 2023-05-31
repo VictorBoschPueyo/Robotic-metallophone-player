@@ -19,11 +19,12 @@ class ArduinoComunication:
         print("\nThe connection has been closed!")
 
     def send_move_by_move(self, moves):
-
+        # Init the arduino
         self.write("L08WR16W")
         time.sleep(2)
         print("START PLAYING")
 
+        # Send the data
         for move in moves:
             if move != "LWWWRWWW":
                 self.write(move)
@@ -41,6 +42,7 @@ class ArduinoComunication:
         data = "".join(moves)
         self.write(data)
 
+        # Fancy wait
         load_animation(len(moves) * 30)
 
         self.close()
