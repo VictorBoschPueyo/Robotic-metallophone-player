@@ -16,7 +16,7 @@ class ArduinoComunication:
 
     def close(self):
         # self.ser.close()
-        print("The connection has been closed!")
+        print("\nThe connection has been closed!")
 
     def send_move_by_move(self, moves):
 

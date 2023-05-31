@@ -95,11 +95,11 @@ def analyze_sheet(img_gray, img, display=False, paralelize=False):
     if paralelize:
         from multiprocessing import Pool
         detections = [
-            (img, img_gray, "sost", sost_imgs, sost_lower, sost_upper, sost_thresh, display),
-            (img, img_gray, "bem", bem_imgs, bem_lower, bem_upper, bem_thresh, display),
-            (img, img_gray, "negra", negra_imgs, negra_lower, negra_upper, negra_thresh, display),
-            (img, img_gray, "blanca", blanca_imgs, blanca_lower, blanca_upper, blanca_thresh, display),
-            (img, img_gray, "rodona", rodona_imgs, rodona_lower, rodona_upper, rodona_thresh, display)
+            (img, img_gray, "sost", sost_imgs, sost_lower, sost_upper, sost_thresh, False),
+            (img, img_gray, "bem", bem_imgs, bem_lower, bem_upper, bem_thresh, False),
+            (img, img_gray, "negra", negra_imgs, negra_lower, negra_upper, negra_thresh, False),
+            (img, img_gray, "blanca", blanca_imgs, blanca_lower, blanca_upper, blanca_thresh, False),
+            (img, img_gray, "rodona", rodona_imgs, rodona_lower, rodona_upper, rodona_thresh, False)
         ]
 
         # Create a pool of workers
