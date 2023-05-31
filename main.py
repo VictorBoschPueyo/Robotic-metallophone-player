@@ -2,12 +2,10 @@ import cv2
 import sys
 import time
 
-from src.partiture_std import partiure_std
 from src.sheet_analyzer import analyze_sheet
 from src.metallophone import Keyboard
 from src.movements import Movement_chain
 from src.arduino_comunication import ArduinoComunication
-from src.camera import take_picture
 
 
 
@@ -40,6 +38,9 @@ if __name__ == '__main__':
 
         if "-p" in opts:
             paralelize = True
+            if display:
+                print("Option display has been disabled because is not recomended to show intermediate results when parallelizing.")
+                display = False
 
         if "-mode" in opts:
             mode = all[all.index("-mode") + 1]
@@ -58,12 +59,14 @@ if __name__ == '__main__':
     ##################
     ## MAIN PROGRAM ##
     ##################
-    start = time.time()
 
     # Take picture
     if sheet is None:
+        from src.camera import take_picture
+        print("Taking picture...")
         take_picture()
-        sheet = "sheets/img.jpg"
+        sheet = "photo_sheet.jpg"
+        print("Picture taken!")
         
     # Read sheet
     img = cv2.imread(sheet)
@@ -71,9 +74,11 @@ if __name__ == '__main__':
     if reference:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     else:
+        from src.partiture_std import partiure_std
         # Standardize the sheet
         img = partiure_std(img)
 
+    start = time.time()
     # Analyze the sheet
     partiture = analyze_sheet(img, img, display, paralelize)
 

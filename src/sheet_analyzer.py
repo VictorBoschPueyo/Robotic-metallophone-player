@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from random import randint
-from multiprocessing import Pool
 
 from src.rectangle import Rectangle
 from src.note import Note
@@ -94,6 +93,7 @@ def analyze_sheet(img_gray, img, display=False, paralelize=False):
     # Detection with every template
     print("Analysing notes and figures...")
     if paralelize:
+        from multiprocessing import Pool
         detections = [
             (img, img_gray, "sost", sost_imgs, sost_lower, sost_upper, sost_thresh, display),
             (img, img_gray, "bem", bem_imgs, bem_lower, bem_upper, bem_thresh, display),
