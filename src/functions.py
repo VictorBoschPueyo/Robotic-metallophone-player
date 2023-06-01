@@ -65,26 +65,21 @@ def load_animation(t):
     load_str = "tocant la partitura..."
     ls_len = len(load_str)
   
-  
     # String for creating the rotating line
     animation = "|/-\\"
     anicount = 0
       
-    # used to keep the track of
-    # the duration of animation
+    # used to keep the track of the duration of animation
     counttime = 0        
       
     # pointer for travelling the loading string
     i = 0                     
   
-    while (counttime != t):
-          
-        # used to change the animation speed
-        # smaller the value, faster will be the animation
+    while (counttime != t):   
+        # used to change the animation speed smaller the value, faster will be the animation
         time.sleep(0.075) 
                               
-        # converting the string to list
-        # as string is immutable
+        # converting the string to list as string is immutable
         load_str_list = list(load_str) 
           
         # x->obtaining the ASCII code
@@ -93,8 +88,7 @@ def load_animation(t):
         # y->for storing altered ASCII code
         y = 0                             
   
-        # if the character is "." or " ", keep it unaltered
-        # switch uppercase to lowercase and vice-versa 
+        # if the character is "." or " ", keep it unaltered switch uppercase to lowercase and vice-versa 
         if x != 32 and x != 46:             
             if x>90:
                 y = x-32
@@ -111,11 +105,9 @@ def load_animation(t):
         sys.stdout.write("\r"+res + animation[anicount])
         sys.stdout.flush()
   
-        # Assigning loading string
-        # to the resultant string
+        # Assigning loading string to the resultant string
         load_str = res
   
-          
         anicount = (anicount + 1)% 4
         i =(i + 1)% ls_len
         counttime = counttime + 1
