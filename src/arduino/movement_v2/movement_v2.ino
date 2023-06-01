@@ -22,6 +22,7 @@ Servo servo_right;
 // Positions array
 int left_positions[25] = {-635, -555, -475, -395, -315, -235, -155, -75, 0, 85, 160, 235, 315, 407, 480, 560, 640, 715, 795, 875, 955, 1035, 0, 0, 0};
 int right_positions[25] = {0, 0, 0, -1035, -955, -875, -795, -710, -640, -555, -480, -400, 315, -233, -160, -80, 0, 75, 155, 234, 315, 390, 480, 555, 635};
+int t = 300;
 
 // Functions
 
@@ -63,7 +64,7 @@ void left_Drumstick_cling()
   servo_left.write(85);
   delay(150);
   servo_left.write(104);
-  delay(500);
+  delay(100);
 }
 
 // Cling right drumstick
@@ -72,7 +73,7 @@ void right_Drumstick_cling()
   servo_right.write(91);
   delay(150);
   servo_right.write(110);
-  delay(500);
+  delay(100);
 }
 
 // Play drumsticks
@@ -172,7 +173,7 @@ void loop()
 
       // Check if the move is a rest
       if (input == "LWWWRWWW"){
-        delay(500);
+        delay(t); // +250?
         continue;
       }
 
@@ -200,15 +201,13 @@ void loop()
       }
 
       // Wait until 1 seconds have passed
-      if (millis() - start < 400){
-        delay(400 - (millis() - start));
+      if (millis() - start < t){
+        delay(t - (millis() - start));
       }
 
       // Play drumsticks
       play_drumsticks(left_play, right_play);
 
-
-      delay(100);
     }
   }
 }

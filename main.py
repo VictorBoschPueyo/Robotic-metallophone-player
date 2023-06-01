@@ -95,7 +95,9 @@ if __name__ == '__main__':
     
     # Get the movements
     print("Distributing movements...")
-    kb = Keyboard(partiture)
+    print("Notes: ", len(partiture.partiture))
+    
+    '''kb = Keyboard(partiture)
     movements = kb.distribuite_movements(display)
 
     # Distribuite the movements
@@ -110,7 +112,7 @@ if __name__ == '__main__':
     if mode == "streaming":
         arduino.send_move_by_move(moves.data)
     else:
-        arduino.send_full_data(moves.data)
+        arduino.send_full_data(moves.data)'''
 
 
 

@@ -50,6 +50,8 @@ blanca_lower, blanca_upper, blanca_thresh = 50, 150, 0.70
 rodona_lower, rodona_upper, rodona_thresh = 50, 150, 0.70
 #################################################################
 
+identi = 'identi.png'
+
 def detect_parallel(args):
     img, img_gray, label, imgs, lower, upper, thresh, display = args
     return detect(img, img_gray, label, imgs, lower, upper, thresh, display)
@@ -169,7 +171,7 @@ def analyze_sheet(img_gray, img, display=False, paralelize=False):
                 i += 1
         note_groups.append(note_group)
 
-    if display:
+    if not display:
         for r in penta_boxes:
             r.draw(img, (0, 0, 255), 2)
         for r in recs_sost:
@@ -177,7 +179,7 @@ def analyze_sheet(img_gray, img, display=False, paralelize=False):
         for r in recs_bem:
             r.draw(img, (0, 0, 255), 2)
 
-        cv2.imwrite('identification.png', img)
+        cv2.imwrite(identi, img)
 
 
     return Partiture(note_groups)
