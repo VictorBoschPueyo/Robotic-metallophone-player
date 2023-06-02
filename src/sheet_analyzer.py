@@ -31,12 +31,12 @@ rodona_imgs = [cv2.imread(f, 0) for f in rodona_files]
 penta_lower, penta_upper, penta_thresh = 50, 150, 0.77
 sost_lower, sost_upper, sost_thresh = 50, 150, 0.70
 bem_lower, bem_upper, bem_thresh = 50, 150, 0.77
-negra_lower, negra_upper, negra_thresh = 50, 150, 0.70
+negra_lower, negra_upper, negra_thresh = 50, 150, 0.72
 blanca_lower, blanca_upper, blanca_thresh = 50, 150, 0.70
 rodona_lower, rodona_upper, rodona_thresh = 50, 150, 0.70
 #################################################################
 
-identi = 'identi.png'
+identi = 'identi_alegria.png'
 
 def detect_parallel(args):
     img, img_gray, label, imgs, lower, upper, thresh, display = args
