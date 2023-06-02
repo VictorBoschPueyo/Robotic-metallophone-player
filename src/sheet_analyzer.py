@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from random import randint
+import glob
 
 from src.rectangle import Rectangle
 from src.note import Note
@@ -11,28 +12,13 @@ from src.functions import locate_images, merge_recs, detect
 
 ######################## Read templates ########################
 path = "utils/masks"
-penta_files = [
-    path + "/penta2.png",
-    path + "/penta.png"]
-sost_files = [
-    path + "/sostingut-espai.png",
-    path + "/sostingut-linia.png"]
-bem_files = [
-    path + "/bemoll-espai.png",
-    path + "/bemoll-linia.png"]
-negra_files = [
-    path + "/negra.png",
-    path + "/negra-gran.png"]
-blanca_files = [
-    path + "/blanca-espai.png",
-    path + "/blanca-espai-gran.png",
-    path + "/blanca-linia.png",
-    path + "/blanca-linia-gran.png"]
-rodona_files = [
-    path + "/rodona-espai.png",
-    path + "/rodona-espai-gran.png",
-    path + "/rodona-linia.png",
-    path + "/rodona-linia-gran.png"]
+
+penta_files = glob.glob(path + "/penta/*.png")
+sost_files = glob.glob(path + "/sostingut/*.png")
+bem_files = glob.glob(path + "/bemoll/*.png")
+negra_files = glob.glob(path + "/negra/*.png")
+blanca_files = glob.glob(path + "/blanca/*.png")
+rodona_files = glob.glob(path + "/rodona/*.png")
 
 penta_imgs = [cv2.imread(f, 0) for f in penta_files]
 sost_imgs = [cv2.imread(f, 0) for f in sost_files]
