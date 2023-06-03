@@ -11,9 +11,9 @@ from src.arduino_comunication import ArduinoComunication
 
 if __name__ == '__main__':
     # Deal with arguments
-    sheet = "sheets/himne_alegria_photo.jpg"
+    sheet = None
     display = False
-    paralelize = True
+    paralelize = False
     mode = "bulk"
     reference = False 
 

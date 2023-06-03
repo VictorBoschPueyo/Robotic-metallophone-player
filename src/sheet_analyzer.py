@@ -36,7 +36,7 @@ blanca_lower, blanca_upper, blanca_thresh = 50, 150, 0.68
 rodona_lower, rodona_upper, rodona_thresh = 50, 150, 0.70
 #################################################################
 
-identi = 'identi_alegria.png'
+identi = 'identi_little.png'
 
 def detect_parallel(args):
     img, img_gray, label, imgs, lower, upper, thresh, display = args
