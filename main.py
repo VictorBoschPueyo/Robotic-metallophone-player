@@ -11,9 +11,9 @@ from src.arduino_comunication import ArduinoComunication
 
 if __name__ == '__main__':
     # Deal with arguments
-    sheet = None
+    sheet = "sheets/himne_alegria_photo.jpg"
     display = False
-    paralelize = False
+    paralelize = True
     mode = "bulk"
     reference = False 
 
@@ -97,12 +97,11 @@ if __name__ == '__main__':
     print("Distributing movements...")
     print("Notes: ", len(partiture.partiture))
     
-    '''kb = Keyboard(partiture)
+    kb = Keyboard(partiture)
     movements = kb.distribuite_movements(display)
 
     # Distribuite the movements
     moves = Movement_chain(movements)
-
 
     print("Algorithm time: ", time.time() - start)
 
@@ -112,7 +111,7 @@ if __name__ == '__main__':
     if mode == "streaming":
         arduino.send_move_by_move(moves.data)
     else:
-        arduino.send_full_data(moves.data)'''
+        arduino.send_full_data(moves.data)
 
 
 

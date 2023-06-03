@@ -31,8 +31,8 @@ rodona_imgs = [cv2.imread(f, 0) for f in rodona_files]
 penta_lower, penta_upper, penta_thresh = 50, 150, 0.77
 sost_lower, sost_upper, sost_thresh = 50, 150, 0.70
 bem_lower, bem_upper, bem_thresh = 50, 150, 0.77
-negra_lower, negra_upper, negra_thresh = 50, 150, 0.72
-blanca_lower, blanca_upper, blanca_thresh = 50, 150, 0.70
+negra_lower, negra_upper, negra_thresh = 50, 150, 0.73
+blanca_lower, blanca_upper, blanca_thresh = 50, 150, 0.68
 rodona_lower, rodona_upper, rodona_thresh = 50, 150, 0.70
 #################################################################
 
@@ -149,8 +149,7 @@ def analyze_sheet(img_gray, img, display=False, paralelize=False):
                 if len(note_group) > 0:
                     note_groups.append(note_group)
                     note_group = []
-                note_color = (randint(0, 255), randint(
-                    0, 255), randint(0, 255))
+                note_color = (randint(0, 255), randint(0, 255), randint(0, 255))
             else:
                 note_group.append(penta_notes[i])
                 penta_notes[i].rec.draw(img, note_color, 2)

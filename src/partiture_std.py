@@ -20,23 +20,21 @@ def undisort_img(img):
 
 
 def wrap_img(img):
-    ref_img = cv2.imread("sheets/himne_alegria_full.png")
-
-    # Get ref image size
-    h_ref, w_ref = ref_img.shape[:2]
+    # Get ref points
+    h_ref, w_ref = 1571, 1165
 
     # Define the corners of the source image
-    src = np.float32([[133, 126], [1823, 151], [25, 1458], [1953, 1458]])
+    src = np.float32([[124, 121], [1850, 129], [37, 1425], [1973, 1425]])
 
     # Define the corners of the destination image
     dst = np.float32(
-        [[0, 0], [w_ref, 0], [0, int(h_ref/2)], [w_ref, int(h_ref/2)]])
+        [[0, 0], [h_ref, 0], [0, w_ref], [h_ref, w_ref]])
 
     # Get the transformation matrix
     M = cv2.getPerspectiveTransform(src, dst)
 
     # Apply the transformation
-    dst = cv2.warpPerspective(img, M, (w_ref, int(h_ref/2)))
+    dst = cv2.warpPerspective(img, M, (h_ref, w_ref))
 
     return dst
 
