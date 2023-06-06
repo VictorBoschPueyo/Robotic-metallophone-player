@@ -38,9 +38,22 @@ class ArduinoComunication:
         self.write("L08WR16W")
         time.sleep(2)
 
-        # Send the data
-        data = "LWWWRWWW" + "".join(moves) + "L08WR16W"
-        self.write(data)
+        # Add last move to go back to the initial position
+        moves.append("L08WR16W")
+
+        # Send the data every 40 moves
+        i = 0
+        tempo = 0.5
+        while i < len(moves):
+            if i + 40 < len(moves):
+                data = "".join(moves[i:i+40])
+                self.write(data)
+                time.sleep(tempo * 40)
+            else:
+                data = "".join(moves[i:])
+                self.write(data)
+                time.sleep(tempo * (len(moves) - i))
+            i += 40
 
         # Fancy wait
         load_animation(20)
