@@ -2,13 +2,13 @@ import cv2
 import math
 
 
-class Rectangle(object):
+class Rectangle:
     def __init__(self, x, y, w, h):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
-        self.middle = self.x + self.w/2, self.y + self.h/2
+        self.middle = (self.x + self.w/2, self.y + self.h/2)
         self.area = self.w * self.h
 
     def overlap(self, other):
@@ -44,6 +44,6 @@ class Rectangle(object):
         '''
         Draw the rectangle in the image
         '''
-        pos = ((int)(self.x), (int)(self.y))
-        size = ((int)(self.x + self.w), (int)(self.y + self.h))
+        pos = (int(self.x), int(self.y))
+        size = (int(self.x + self.w), int(self.y + self.h))
         cv2.rectangle(img, pos, size, color, thickness)

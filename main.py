@@ -1,13 +1,4 @@
-import cv2
 import sys
-import time
-
-from src.sheet_analyzer import analyze_sheet
-from src.metallophone import Keyboard
-from src.movements import Movement_chain
-from src.arduino_comunication import ArduinoComunication
-
-
 
 if __name__ == '__main__':
     # Deal with arguments
@@ -23,13 +14,32 @@ if __name__ == '__main__':
         all = sys.argv[1:]
 
         ############# Arguments #############
+        # -h/-help: explain options
         # -s: sheet
         # -d: display graphs
         # -p: paralelize
         # -mode: mode (streaming/bulk)
         # -r: reference image
-        # -h/-help: explain options
         #####################################
+
+        if ("-h" in opts) or ("-help" in opts):
+            print("Arguments available:")
+            print("\t -s [sheet_name]:\t specify local sheet in the project to play (this option does not take a picture with the camera). [default = disabled]")
+            print("\t -d:\t\t\t show intermediate results and processes calculations. [default = disabled]")
+            print("\t -p:\t\t\t paralelizes analyze process (this option shows less information if combined with 'display'). [default = disabled]")
+            print("\t -mode [bulk/streaming]: choose between a bulk transfer of data to the arduino or a streaming one. [default = bulk]")
+            print("\t -r:\t\t\t disables the standardization of the image. Used when a specified sheet is given. [defualt = disabled]")
+            print("\n")
+            exit()
+        else:
+            import time
+            import cv2
+
+            from src.sheet_analyzer import analyze_sheet
+            from src.metallophone import Keyboard
+            from src.movements import Movement_chain
+            from src.arduino_comunication import ArduinoComunication
+
 
         if "-s" in opts:
             sheet = "sheets/" + all[all.index("-s") + 1]
@@ -46,17 +56,7 @@ if __name__ == '__main__':
         if "-r" in opts:
             reference = True
 
-        if ("-h" in opts) or ("-help" in opts):
-            print("Arguments available:")
-            print("\t -s [sheet_name]:\t specify local sheet in the project to play (this option does not take a picture with the camera). [default = disabled]")
-            print("\t -d:\t\t\t show intermediate results and processes calculations. [default = disabled]")
-            print("\t -p:\t\t\t paralelizes analyze process (this option shows less information if combined with 'display'). [default = disabled]")
-            print("\t -mode [bulk/streaming]: choose between a bulk transfer of data to the arduino or a streaming one. [default = bulk]")
-            print("\t -r:\t\t\t disables the standardization of the image. Used when a specified sheet is given. [defualt = disabled]")
-            print("\n")
-            exit()
-
-
+    print("\n----------------------")
     print("Arguments:")
     print("--Sheet: \t", sheet)
     print("--Display: \t", display)

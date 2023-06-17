@@ -1,5 +1,11 @@
 from src.constants import *
 
+durations = {
+    "corxera": 1,
+    "negra": 2,
+    "blanca": 4,
+    "rodona": 8
+}
 
 class Move:
     def __init__(self, note, option) -> None:
@@ -7,17 +13,7 @@ class Move:
         self.option = option  # T = transition, P = play
 
         self.note_pos = get_note_index(self.note)
-        self.duration = self.set_duration(note.duration)
-
-    def set_duration(self, duration):
-        if duration == "corxera":
-            return 1
-        elif duration == "negra":
-            return 2
-        elif duration == "blanca":
-            return 4
-        elif duration == "rodona":
-            return 8
+        self.duration = durations.get(note.duration)
 
 
 class Movement_chain:

@@ -11,8 +11,7 @@ class Key:
 
 class Keyboard:
     def __init__(self, partiture) -> None:
-        self.keyboard = self.create_keyboard(
-            partiture.lowest_note, partiture.highest_note)
+        self.keyboard = self.create_keyboard(partiture.lowest_note, partiture.highest_note)
 
         self.notes = partiture.partiture
 
@@ -30,14 +29,9 @@ class Keyboard:
                 return i
 
     def create_keyboard(self, lowest_note, highest_note):
-        keyboard = []
         ind_init = get_note_index(lowest_note)
         ind_end = get_note_index(highest_note)
-
-        for i in range(ind_init, ind_end+1):
-            keyboard.append(Key(entire_keyboard[i]))
-
-        return keyboard
+        return [Key(entire_keyboard[i]) for i in range(ind_init, ind_end+1)]
 
     def calculate_middle(self, partiture):
         # Sort partiture notes by note value
@@ -198,7 +192,7 @@ class Keyboard:
             else:
                 notes += "|  " + key.note[0] + "   "
 
-            if key.motor != None:
+            if key.motor is not None:
                 motor += "| motor "
             else:
                 motor += "|       "
