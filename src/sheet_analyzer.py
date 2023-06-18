@@ -36,7 +36,7 @@ blanca_lower, blanca_upper, blanca_thresh = 50, 150, 0.68
 rodona_lower, rodona_upper, rodona_thresh = 50, 150, 0.70
 #################################################################
 
-identi = 'identi_little.png'
+identi = 'identification.png'
 
 def detect_parallel(args):
     img, img_gray, label, imgs, lower, upper, thresh, display = args
@@ -156,7 +156,7 @@ def analyze_sheet(img_gray, img, display=False, paralelize=False):
                 i += 1
         note_groups.append(note_group)
 
-    if not display:
+    if display:
         for r in penta_boxes:
             r.draw(img, (0, 0, 255), 2)
         for r in recs_sost:
