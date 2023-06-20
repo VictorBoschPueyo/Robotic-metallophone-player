@@ -57,7 +57,7 @@ class Keyboard:
                             self.pos_motor_left - i) * 0.05 + 0.1
                     else:
                         self.keyboard[i].weight_left = abs(
-                            self.pos_motor_left - i) * 0.1 + 0.5
+                            self.pos_motor_left - i) * 0.1
             else:
                 self.keyboard[i].weight_left = 999.9
 
@@ -75,13 +75,13 @@ class Keyboard:
                             self.pos_motor_right - i) * 0.05 + 0.1
                     else:
                         self.keyboard[i].weight_right = abs(
-                            self.pos_motor_right - i) * 0.1 + 0.5
+                            self.pos_motor_right - i) * 0.1
             else:
                 self.keyboard[i].weight_right = 999.9
 
     def initial_calculation(self):
         # Position motors to the middle of "their" middle keyboard
-        self.pos_motor_left = int(self.middle/2)
+        self.pos_motor_left = int((self.middle - 1)/2)
         self.pos_motor_right = int(self.middle + (self.n_keys - self.middle)/2)
 
         self.keyboard[self.pos_motor_left].motor = "left"
@@ -90,6 +90,8 @@ class Keyboard:
         # Calculate weights
         self.calculate_weights_left()
         self.calculate_weights_right()
+
+        self.print_keyboard()
 
     def distribuite_movements(self, display=False):
         movements = []
