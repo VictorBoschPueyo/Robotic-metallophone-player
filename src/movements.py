@@ -34,7 +34,7 @@ class Movement_chain:
         ind_left = 0
         ind_right = 0
         for ind_move in range(len(self.movement)):
-            if ind_move == left_notes[ind_left]:
+            if ind_move < len(left_notes) and ind_move == left_notes[ind_left]:
                 # Move left motor
                 mov = Move(self.movement[left_notes[ind_left]][1], "P")
                 movement_chain_left.append(mov)
@@ -60,7 +60,7 @@ class Movement_chain:
                     else:
                         movement_chain_right.append(None)
 
-            elif ind_move == right_notes[ind_right]:
+            elif ind_move < len(right_notes) and ind_move == right_notes[ind_right]:
                 # Move right motor
                 mov = Move(self.movement[right_notes[ind_right]][1], "P")
                 movement_chain_right.append(mov)

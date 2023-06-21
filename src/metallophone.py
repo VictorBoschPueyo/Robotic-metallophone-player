@@ -57,7 +57,7 @@ class Keyboard:
                             self.pos_motor_left - i) * 0.05 + 0.1
                     else:
                         self.keyboard[i].weight_left = abs(
-                            self.pos_motor_left - i) * 0.1
+                            self.pos_motor_left - i) * 0.1 + 0.5
             else:
                 self.keyboard[i].weight_left = 999.9
 
@@ -75,7 +75,7 @@ class Keyboard:
                             self.pos_motor_right - i) * 0.05 + 0.1
                     else:
                         self.keyboard[i].weight_right = abs(
-                            self.pos_motor_right - i) * 0.1
+                            self.pos_motor_right - i) * 0.1 + 0.5
             else:
                 self.keyboard[i].weight_right = 999.9
 
