@@ -7,11 +7,6 @@ def undisort_img(img):
     with np.load('utils/calibration/calib.npz') as X:
         mtx, dist, newcameramtx, roi = [X[i]
                                         for i in ('mtx', 'dist', 'newcameramtx', 'roi')]
-        
-    print("Camera matrix: ", mtx)
-    print("Distortion coefficients: ", dist)
-    print("New camera matrix: ", newcameramtx)
-    print("Region of interest: ", roi)
 
     # Apply the undistortion to the music sheet
     h, w = img.shape[:2]
